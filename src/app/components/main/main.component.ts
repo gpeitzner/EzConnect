@@ -41,7 +41,14 @@ export class MainComponent implements OnInit {
         email: this.loginEmail,
         password: this.loginPassword,
       };
-      //this.clearLoginData();
+      this.userService.login(params).subscribe(
+        (data: User) => {
+          this.userService.user = data;
+          this.router.navigateByUrl('/home');
+          this.clearLoginData();
+        },
+        () => this.clearLoginData()
+      );
     }
   }
 
@@ -65,9 +72,8 @@ export class MainComponent implements OnInit {
             this.userService.user = data;
             this.router.navigateByUrl('/home');
           },
-          (error) => console.log(error)
+          () => this.clearRegisterData()
         );
-        //this.clearRegisterData();
       }
     }
   }
