@@ -14,10 +14,19 @@
       <h4>Entrar</h4>
       <div class="border p-4">
         <h6>Correo</h6>
-        <input type="email" style="width: 100%" />
+        <input type="email" style="width: 100%" [(ngModel)]="loginEmail" />
         <h6>Contraseña</h6>
-        <input type="password" style="width: 100%" />
-        <button type="button" class="btn btn-primary mt-3" style="width: 100%">
+        <input
+          type="password"
+          style="width: 100%"
+          [(ngModel)]="loginPassword"
+        />
+        <button
+          type="button"
+          class="btn btn-primary mt-3"
+          style="width: 100%"
+          (click)="handleLogin()"
+        >
           Entrar
         </button>
       </div>
@@ -26,16 +35,34 @@
       <h4>Registrarse</h4>
       <div class="border p-4">
         <h6>Nombre completo</h6>
-        <input type="text" style="width: 100%" />
+        <input type="text" style="width: 100%" [(ngModel)]="registerName" />
         <h6>Correo</h6>
-        <input type="email" style="width: 100%" />
+        <input type="email" style="width: 100%" [(ngModel)]="registerEmail" />
         <h6>Contraseña</h6>
-        <input type="password" style="width: 100%" />
+        <input
+          type="password"
+          style="width: 100%"
+          [(ngModel)]="registerPassword"
+        />
         <h6>Confirmar contraseña</h6>
-        <input type="password" style="width: 100%" />
+        <input
+          type="password"
+          style="width: 100%"
+          [(ngModel)]="registerConfirmPassword"
+        />
         <h6>Foto</h6>
-        <input type="file" style="width: 100%" />
-        <button type="button" class="btn btn-success mt-3" style="width: 100%">
+        <input
+          type="file"
+          style="width: 100%"
+          (change)="handlePhoto($event)"
+          accept="image/x-png"
+        />
+        <button
+          type="button"
+          class="btn btn-success mt-3"
+          style="width: 100%"
+          (click)="handleRegister()"
+        >
           Registrarse
         </button>
       </div>
