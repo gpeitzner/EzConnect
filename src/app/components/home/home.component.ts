@@ -8,11 +8,16 @@ import { UserService } from 'src/app/services/user.service';
   styleUrls: ['./home.component.css'],
 })
 export class HomeComponent implements OnInit {
-  constructor(private userService: UserService, private router: Router) {
+  constructor(public userService: UserService, private router: Router) {
     if (!this.userService.user) {
       this.router.navigateByUrl('/');
     }
   }
 
   ngOnInit(): void {}
+
+  handleExit(): void {
+    this.userService.user = null;
+    this.router.navigateByUrl('/');
+  }
 }
