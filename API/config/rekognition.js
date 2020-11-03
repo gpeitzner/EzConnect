@@ -1,5 +1,5 @@
 const AWS = require("aws-sdk");
-const RKG = AWS.Rekognition({
+const RKG = new AWS.Rekognition({
   accessKeyId: "AKIA5M3XKPWM3LDWNR43",
   secretAccessKey: "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",
 });

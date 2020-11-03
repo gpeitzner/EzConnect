@@ -1,4 +1,7 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
+import { User } from 'src/app/interfaces/user';
+import { UserService } from 'src/app/services/user.service';
 
 @Component({
   selector: 'app-main',
@@ -15,7 +18,7 @@ export class MainComponent implements OnInit {
   registerConfirmPassword: string;
   registerPhoto: any;
 
-  constructor() {}
+  constructor(private userService: UserService, private router: Router) {}
 
   ngOnInit(): void {}
 
@@ -38,8 +41,7 @@ export class MainComponent implements OnInit {
         email: this.loginEmail,
         password: this.loginPassword,
       };
-      console.log(params);
-      this.clearLoginData();
+      //this.clearLoginData();
     }
   }
 
@@ -51,14 +53,22 @@ export class MainComponent implements OnInit {
       this.registerConfirmPassword &&
       this.registerPhoto
     ) {
-      const params = {
-        name: this.registerName,
-        email: this.registerEmail,
-        password: this.registerPassword,
-        photo: this.registerPhoto,
-      };
-      console.log(params);
-      this.clearRegisterData();
+      if (this.registerPassword === this.registerConfirmPassword) {
+        const params = {
+          name: this.registerName,
+          email: this.registerEmail,
+          password: this.registerPassword,
+          photo: this.registerPhoto,
+        };
+        this.userService.register(params).subscribe(
+          (data: User) => {
+            this.userService.user = data;
+            this.router.navigateByUrl('/home');
+          },
+          (error) => console.log(error)
+        );
+        //this.clearRegisterData();
+      }
     }
   }
 

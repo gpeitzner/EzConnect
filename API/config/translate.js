@@ -21,4 +21,4 @@ function translate(text) {
   });
 }
 
-module.exports = translate;
+module.exports = { translate };

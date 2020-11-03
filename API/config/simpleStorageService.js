@@ -24,4 +24,4 @@ function uploadImage(buffer64) {
   });
 }
 
-module.exports = uploadImage;
+module.exports = { uploadImage };
