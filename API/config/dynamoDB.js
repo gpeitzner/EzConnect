@@ -1,3 +1,4 @@
+const { DynamoDB } = require("aws-sdk");
 const AWS = require("aws-sdk");
 const DDB = new AWS.DynamoDB({
   accessKeyId: "AKIA5M3XKPWM3LDWNR43",
@@ -29,4 +30,16 @@ function get(params) {
   });
 }
 
-module.exports = { insert, get };
+function getAll(params) {
+  return new Promise((resolve, reject) => {
+    DDB.scan(params, (err, data) => {
+      if (err) {
+        reject(err);
+      } else {
+        resolve(data);
+      }
+    });
+  });
+}
+
+module.exports = { insert, get, getAll };

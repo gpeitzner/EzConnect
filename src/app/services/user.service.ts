@@ -23,4 +23,8 @@ export class UserService {
       userCredentials
     );
   }
+
+  getAll(): Observable<User[]> {
+    return this.httpClient.get<User[]>(this.api + 'users');
+  }
 }
