@@ -27,4 +27,12 @@ export class UserService {
   getAll(): Observable<User[]> {
     return this.httpClient.get<User[]>(this.api + 'users');
   }
+
+  getUser(email: string): Observable<User> {
+    return this.httpClient.get<User>(this.api + 'users/' + email);
+  }
+
+  updateUser(user: User): Observable<User> {
+    return this.httpClient.put<User>(this.api + 'users', user);
+  }
 }
