@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { Publication } from 'src/app/interfaces/publication';
 import { User } from 'src/app/interfaces/user';
 import { PublishService } from 'src/app/services/publish.service';
 import { UserService } from 'src/app/services/user.service';
@@ -19,6 +20,10 @@ export class HomeComponent implements OnInit {
   requests: User[] = [];
   pendings: User[] = [];
   friends: User[] = [];
+  publications: Publication[] = [];
+
+  creatingPublication: boolean;
+  publicationError: string;
 
   constructor(
     private userService: UserService,
@@ -63,6 +68,12 @@ export class HomeComponent implements OnInit {
       );
       this.friends = this.users.filter((user: User) =>
         this.account.friends.includes(user.email)
+      );
+      const allPublications = await this.publishService.getAll().toPromise();
+      this.publications = allPublications.filter(
+        (publication) =>
+          publication.email === this.account.email ||
+          this.account.friends.includes(publication.email)
       );
     } catch (error) {
       console.log(error);
@@ -172,12 +183,22 @@ export class HomeComponent implements OnInit {
         friends: friendsData,
         photo: this.publicationPhoto,
       };
-      this.publishService.createPubish(params).subscribe(
-        (data: any) => console.log(data),
+      this.creatingPublication = true;
+      this.publishService.createPublication(params).subscribe(
+        () => {
+          this.publicationError = '';
+          this.creatingPublication = false;
+          this.clearPublicationData();
+          this.getCoreData();
+        },
         (error) => {
+          this.publicationError = 'No se pudo crear la publicación';
+          this.creatingPublication = false;
           console.log(error);
         }
       );
+    } else {
+      this.publicationError = 'Una publicación lleva texto y una imagen';
     }
   }
 

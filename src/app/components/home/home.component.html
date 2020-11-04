@@ -115,6 +115,11 @@
             (change)="handlePhoto($event)"
             accept="image/x-png"
           />
+          <div class="text-center" *ngIf="this.creatingPublication">
+            <div class="spinner-border text-primary my-1" role="status">
+              <span class="sr-only">Loading...</span>
+            </div>
+          </div>
           <button
             type="button"
             class="btn btn-success mt-2"
@@ -123,39 +128,41 @@
           >
             Publicar
           </button>
-        </div>
-      </div>
-      <div class="card my-2">
-        <img src="assets/logo.png" class="card-img-top" />
-        <div class="card-body">
-          <h5 class="card-title">Card title</h5>
-          <p class="card-text">
-            Some quick example text to build on the card title and make up the
-            bulk of the card's content.
-          </p>
-          <div>
-            <span class="badge badge-pill badge-primary m-1">Amigo 1</span
-            ><span class="badge badge-pill badge-primary m-1">Amigo 2</span>
-            <span class="badge badge-pill badge-secondary m-1">Item 1</span>
-            <span class="badge badge-pill badge-secondary m-1">Item 2</span>
-            <span class="badge badge-pill badge-secondary m-1">Item 3</span>
+          <div
+            class="alert alert-danger mt-2"
+            role="alert"
+            *ngIf="this.publicationError"
+          >
+            {{ this.publicationError }}
           </div>
         </div>
       </div>
-      <div class="card my-2">
-        <img src="assets/logo.png" class="card-img-top" />
+      <div class="card my-2" *ngFor="let publication of this.publications">
+        <img [src]="publication.photo" class="card-img-top" />
         <div class="card-body">
-          <h5 class="card-title">Card title</h5>
+          <div class="card-title">
+            <img
+              [src]="publication.avatar"
+              width="30"
+              height="30"
+              class="d-inline-block align-top mr-2 rounded-circle"
+              loading="lazy"
+            />{{ publication.name }}
+          </div>
           <p class="card-text">
-            Some quick example text to build on the card title and make up the
-            bulk of the card's content.
+            {{ publication.text }}
           </p>
           <div>
-            <span class="badge badge-pill badge-primary m-1">Amigo 1</span
-            ><span class="badge badge-pill badge-primary m-1">Amigo 2</span>
-            <span class="badge badge-pill badge-secondary m-1">Item 1</span>
-            <span class="badge badge-pill badge-secondary m-1">Item 2</span>
-            <span class="badge badge-pill badge-secondary m-1">Item 3</span>
+            <span
+              class="badge badge-pill badge-primary m-1"
+              *ngFor="let friend of publication.friends"
+              >{{ friend }}</span
+            >
+            <span
+              class="badge badge-pill badge-secondary m-1"
+              *ngFor="let tag of publication.tags"
+              >{{ tag }}</span
+            >
           </div>
         </div>
       </div>

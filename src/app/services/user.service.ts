@@ -11,7 +11,7 @@ export class UserService {
 
   user: User;
 
-  api: string = 'http://localhost:3000/';
+  api: string = 'http://www.ezconnectgt.ml:3000/';
 
   register(newUser: any): Observable<User> {
     return this.httpClient.post<User>(this.api + 'users', newUser);

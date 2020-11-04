@@ -11,12 +11,14 @@ import { UserService } from 'src/app/services/user.service';
 export class MainComponent implements OnInit {
   loginEmail: string;
   loginPassword: string;
+  loginError: string;
 
   registerName: string;
   registerEmail: string;
   registerPassword: string;
   registerConfirmPassword: string;
   registerPhoto: any;
+  registerError: string;
 
   constructor(private userService: UserService, private router: Router) {}
 
@@ -47,8 +49,13 @@ export class MainComponent implements OnInit {
           this.router.navigateByUrl('/home');
           this.clearLoginData();
         },
-        () => this.clearLoginData()
+        () => {
+          this.loginError = 'Credenciales inválidas';
+          this.clearLoginData();
+        }
       );
+    } else {
+      this.loginError = 'Ingresa tus datos de acceso';
     }
   }
 
@@ -72,9 +79,16 @@ export class MainComponent implements OnInit {
             this.userService.user = data;
             this.router.navigateByUrl('/home');
           },
-          () => this.clearRegisterData()
+          () => {
+            this.registerError = 'No se pudo crear tu cuenta';
+            this.clearRegisterData();
+          }
         );
+      } else {
+        this.registerError = 'Las contraseñas no coinciden';
       }
+    } else {
+      this.registerError = 'Todos los campos son obligatorios';
     }
   }
 

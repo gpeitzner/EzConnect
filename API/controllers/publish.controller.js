@@ -2,9 +2,8 @@ const s3 = require("../config/simpleStorageService");
 const dynamoDB = require("../config/dynamoDB");
 const translate = require("../config/translate");
 const rekognition = require("../config/rekognition");
-const { parse } = require("path");
 
-const createPublish = async (req, res) => {
+const createPublication = async (req, res) => {
   try {
     const { email, name, avatar, text, friends, photo } = req.body;
     const photoLocation = await s3.uploadImage(photo);
@@ -19,11 +18,17 @@ const createPublish = async (req, res) => {
     }
     const finalFriends = [];
     for (let i = 0; i < friends.length; i++) {
-      const friend = friends[i];
-      const compare = await rekognition.compareImages(photoName, friend.photo);
-      if (compare === 1) {
-        finalFriends.push(friend.name);
-      }
+      try {
+        const friend = friends[i];
+        const compare = await rekognition.compareImages(
+          photoName,
+          friend.photo
+        );
+
+        if (compare === 1) {
+          finalFriends.push(friend.name);
+        }
+      } catch (error) {}
     }
     const item = {
       PublishId: { N: Date.now().toString() },
@@ -47,8 +52,32 @@ const createPublish = async (req, res) => {
     res.json(item);
   } catch (error) {
     console.log(error);
-    res.json({ message: "Bad publish data" });
+    res.status(400).json({ message: "Bad publish data" });
   }
 };
 
-module.exports = { createPublish };
+const getAllPublications = async (req, res) => {
+  try {
+    const params = {
+      TableName: "ezconnectgt-publish",
+    };
+    const results = await dynamoDB.getAll(params);
+    res.json(
+      results.Items.map((publication) => {
+        return {
+          email: publication.email.S,
+          name: publication.name.S,
+          avatar: publication.avatar.S,
+          text: publication.text.S,
+          photo: publication.photo.S,
+          tags: publication.tags ? publication.tags.SS : [],
+          friends: publication.friends ? publication.friends.SS : [],
+        };
+      })
+    );
+  } catch (error) {
+    res.status(400).json({ message: "Error getting publications data" });
+  }
+};
+
+module.exports = { createPublication, getAllPublications };

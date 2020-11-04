@@ -15,7 +15,7 @@ function getTags(image) {
         },
       },
       MaxLabels: 5,
-      MinConfidence: 95,
+      MinConfidence: 90,
     };
     RKG.detectLabels(params, (err, data) => {
       if (err) {
@@ -48,7 +48,11 @@ function compareImages(first, second) {
       if (err) {
         reject(err);
       } else {
-        resolve(data.FaceMatches.length);
+        if (data.FaceMatches) {
+          resolve(1);
+        } else {
+          resolve(0);
+        }
       }
     });
   });
