@@ -14,6 +14,7 @@ export class HomeComponent implements OnInit {
   suggestions: User[];
   requests: User[];
   pendings: User[];
+  friends: User[];
 
   constructor(public userService: UserService, private router: Router) {
     if (!this.userService.user) {
@@ -52,7 +53,10 @@ export class HomeComponent implements OnInit {
       this.pendings = this.users.filter((user: User) =>
         user.invitations.includes(this.account.email)
       );
-      console.log(this.pendings);
+      this.friends = this.users.filter((user: User) =>
+        this.account.friends.includes(user.email)
+      );
+      console.log(this.friends);
     } catch (error) {
       console.log(error);
     }
@@ -64,5 +68,57 @@ export class HomeComponent implements OnInit {
       () => this.getCoreData(),
       (error) => console.log(error)
     );
+  }
+
+  cancelInvitation(pending: User): void {
+    pending.invitations = pending.invitations.filter(
+      (invitation) => invitation != this.account.email
+    );
+    console.log(pending);
+    this.userService.updateUser(pending).subscribe(
+      () => this.getCoreData(),
+      (error) => console.log(error)
+    );
+  }
+
+  async acceptInvitation(request: User): Promise<void> {
+    try {
+      this.account.invitations = this.account.invitations.filter(
+        (invitation) => invitation != request.email
+      );
+      this.account.friends.push(request.email);
+      await this.userService.updateUser(this.account).toPromise();
+      request.friends.push(this.account.email);
+      await this.userService.updateUser(request).toPromise();
+      this.getCoreData();
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  declineInvitation(request: User): void {
+    this.account.invitations = this.account.invitations.filter(
+      (invitation) => invitation != request.email
+    );
+    this.userService.updateUser(this.account).subscribe(
+      () => this.getCoreData(),
+      (error) => console.log(error)
+    );
+  }
+
+  async deleteFriend(friend: User): Promise<void> {
+    try {
+      this.account.friends = this.account.friends.filter(
+        (currentFriend) => currentFriend != friend.email
+      );
+      await this.userService.updateUser(this.account).toPromise();
+      friend.friends = friend.friends.filter(
+        (currentFriend) => currentFriend != this.account.email
+      );
+      await this.userService.updateUser(friend).toPromise();
+      this.getCoreData();
+    } catch (error) {
+      console.log(error);
+    }
   }
 }
