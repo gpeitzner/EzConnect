@@ -8,14 +8,14 @@
       loading="lazy"
     />EzConnect</a
   >
-  <div class="mt-1">
+  <div class="mt-1" *ngIf="this.account">
     <img
-      [src]="this.userService.user.photo"
+      [src]="this.account.photo"
       width="30"
       height="30"
       class="d-inline-block align-top mr-2 rounded-circle"
       loading="lazy"
-    />{{ this.userService.user.name }}
+    />{{ this.account.name }}
     <button
       type="button"
       class="btn btn-danger btn-sm ml-2"
@@ -103,12 +103,23 @@
       <h4 clas>Publicaciones</h4>
       <div class="card my-2">
         <div class="card-body">
-          <input type="text" style="width: 100%" />
-          <input type="file" style="width: 100%" class="mt-2" />
+          <input
+            type="text"
+            style="width: 100%"
+            [(ngModel)]="publicationText"
+          />
+          <input
+            type="file"
+            style="width: 100%"
+            class="mt-2"
+            (change)="handlePhoto($event)"
+            accept="image/x-png"
+          />
           <button
             type="button"
             class="btn btn-success mt-2"
             style="width: 100%"
+            (click)="makePublication()"
           >
             Publicar
           </button>

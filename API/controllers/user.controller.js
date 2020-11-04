@@ -1,6 +1,5 @@
 const s3 = require("../config/simpleStorageService");
 const dynamoDB = require("../config/dynamoDB");
-const { DynamoDB } = require("aws-sdk");
 
 const getUser = async (req, res) => {
   const email = req.params.email;

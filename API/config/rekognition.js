@@ -2,6 +2,7 @@ const AWS = require("aws-sdk");
 const RKG = new AWS.Rekognition({
   accessKeyId: "AKIA5M3XKPWM3LDWNR43",
   secretAccessKey: "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",
+  region: "us-east-2",
 });
 
 function getTags(image) {
@@ -13,8 +14,8 @@ function getTags(image) {
           Name: image,
         },
       },
-      MaxLabels: 123,
-      MinConfidence: 85,
+      MaxLabels: 5,
+      MinConfidence: 95,
     };
     RKG.detectLabels(params, (err, data) => {
       if (err) {

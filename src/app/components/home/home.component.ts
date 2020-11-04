@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { User } from 'src/app/interfaces/user';
+import { PublishService } from 'src/app/services/publish.service';
 import { UserService } from 'src/app/services/user.service';
 
 @Component({
@@ -9,14 +10,21 @@ import { UserService } from 'src/app/services/user.service';
   styleUrls: ['./home.component.css'],
 })
 export class HomeComponent implements OnInit {
-  account: User;
-  users: User[];
-  suggestions: User[];
-  requests: User[];
-  pendings: User[];
-  friends: User[];
+  publicationText: string;
+  publicationPhoto: string;
 
-  constructor(public userService: UserService, private router: Router) {
+  account: User;
+  users: User[] = [];
+  suggestions: User[] = [];
+  requests: User[] = [];
+  pendings: User[] = [];
+  friends: User[] = [];
+
+  constructor(
+    private userService: UserService,
+    private router: Router,
+    private publishService: PublishService
+  ) {
     if (!this.userService.user) {
       this.router.navigateByUrl('/');
     } else {
@@ -56,7 +64,6 @@ export class HomeComponent implements OnInit {
       this.friends = this.users.filter((user: User) =>
         this.account.friends.includes(user.email)
       );
-      console.log(this.friends);
     } catch (error) {
       console.log(error);
     }
@@ -74,7 +81,6 @@ export class HomeComponent implements OnInit {
     pending.invitations = pending.invitations.filter(
       (invitation) => invitation != this.account.email
     );
-    console.log(pending);
     this.userService.updateUser(pending).subscribe(
       () => this.getCoreData(),
       (error) => console.log(error)
@@ -120,5 +126,63 @@ export class HomeComponent implements OnInit {
     } catch (error) {
       console.log(error);
     }
+  }
+
+  handlePhoto(event: any): void {
+    if (event.target.files[0]) {
+      this.toBase64(event.target.files[0])
+        .then((image) => (this.publicationPhoto = image))
+        .catch((error) => console.log(error));
+    }
+  }
+
+  toBase64(image: any): Promise<any> {
+    return new Promise((resolve, reject) => {
+      let reader = new FileReader();
+      reader.readAsDataURL(image);
+      reader.onload = function () {
+        resolve(
+          reader.result
+            .toString()
+            .substring(22, reader.result.toString().length)
+        );
+      };
+      reader.onerror = function (error) {
+        reject(error);
+      };
+    });
+  }
+
+  makePublication(): void {
+    if (this.publicationText && this.publicationPhoto) {
+      let friendsData = [];
+      for (let i = 0; i < this.friends.length; i++) {
+        const friend = this.friends[i];
+        const photoName = friend.photo.split('/');
+        friendsData.push({
+          name: friend.name,
+          photo: photoName[photoName.length - 1],
+        });
+      }
+      const params = {
+        email: this.account.email,
+        name: this.account.name,
+        avatar: this.account.photo,
+        text: this.publicationText,
+        friends: friendsData,
+        photo: this.publicationPhoto,
+      };
+      this.publishService.createPubish(params).subscribe(
+        (data: any) => console.log(data),
+        (error) => {
+          console.log(error);
+        }
+      );
+    }
+  }
+
+  clearPublicationData(): void {
+    this.publicationText = '';
+    this.publicationPhoto = '';
   }
 }
