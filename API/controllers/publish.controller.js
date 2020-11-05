@@ -24,9 +24,10 @@ const createPublication = async (req, res) => {
           photoName,
           friend.photo
         );
-
-        if (compare === 1) {
-          finalFriends.push(friend.name);
+        if (compare !== 0) {
+          if (compare.Similarity > 90) {
+            finalFriends.push(friend.name);
+          }
         }
       } catch (error) {}
     }

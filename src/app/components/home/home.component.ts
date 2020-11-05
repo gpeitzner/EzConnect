@@ -204,6 +204,5 @@ export class HomeComponent implements OnInit {
 
   clearPublicationData(): void {
     this.publicationText = '';
-    this.publicationPhoto = '';
   }
 }

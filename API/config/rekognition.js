@@ -49,7 +49,7 @@ function compareImages(first, second) {
         reject(err);
       } else {
         if (data.FaceMatches) {
-          resolve(1);
+          resolve(data.FaceMatches[0]);
         } else {
           resolve(0);
         }
