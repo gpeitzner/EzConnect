@@ -9,7 +9,7 @@ import { Publication } from '../interfaces/publication';
 export class PublishService {
   constructor(private httpClient: HttpClient) {}
 
-  api: string = 'http://www.ezconnectgt.ml:3000/';
+  api: string = 'http://13.58.210.109:3000/';
 
   createPublication(publish: any): Observable<any> {
     return this.httpClient.post<any>(this.api + 'publishes', publish);
